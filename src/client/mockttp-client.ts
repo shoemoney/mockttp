@@ -385,6 +385,7 @@ export class MockttpClient extends AbstractMockttp implements Mockttp {
     }
 
     async start(portConfig?: number | PortRange): Promise<void> {
+        console.log('client start?');
         if (this.mockServerConfig) throw new Error('Server is already started');
         if (this.debug) console.log(`Starting remote mock server on port ${portConfig}`);
 
@@ -421,6 +422,7 @@ export class MockttpClient extends AbstractMockttp implements Mockttp {
     // Call when either we want the server to stop, or it appears that the server has already stopped,
     // and we just want to ensure that's happened and clean everything up.
     async stop(): Promise<void> {
+        console.log('Client stop?');
         if (!this.running) return;
         this.running = false;
 
@@ -436,9 +438,11 @@ export class MockttpClient extends AbstractMockttp implements Mockttp {
     }
 
     private requestServerStop() {
+        console.log('client requesting server stop');
         return this.requestFromMockServer('/stop', {
             method: 'POST'
         }).catch((e) => {
+            console.log('server stop error');
             if (e instanceof RequestError && e.response.status === 404) {
                 // 404 means it doesn't exist, generally because it was already stopped
                 // by some other parallel shutdown process.
@@ -449,6 +453,7 @@ export class MockttpClient extends AbstractMockttp implements Mockttp {
         }).then(() => {
             this.mockServerSchema = undefined;
             this.mockServerConfig = undefined;
+            console.log('server stopped, config cleared');
         });
     }
 

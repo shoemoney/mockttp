@@ -35,7 +35,7 @@ nodeOnly(() => {
         describe("with no configuration", () => {
 
             const server = getStandalone();
-            const remoteServer = getRemote();
+            const remoteServer = getRemote({ debug: true });
 
             before(() => server.start());
             after(() => server.stop());
@@ -406,9 +406,12 @@ nodeOnly(() => {
 
             it("should reject multiple clients trying to control the same port", async () => {
                 const port = remoteServer.port!;
+                console.log('test started, port is', port);
 
-                await expect(getRemote().start(port))
+                await expect(getRemote({ debug: true }).start(port))
                     .to.eventually.be.rejectedWith(`Cannot start: mock server is already running on port ${port}`);
+
+                console.log('test completed?')
             });
 
             describe("given another service using a port", () => {
